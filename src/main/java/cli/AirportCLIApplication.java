@@ -2,6 +2,7 @@ package cli;
 
 import rest.RESTClient;
 
+import java.util.List;
 import java.util.Scanner;
 
 import domain.*;
@@ -21,6 +22,32 @@ public class AirportCLIApplication {
     public void setRestClient(RESTClient restClient) {
         this.restClient = restClient;
     }
+
+    //1.
+
+    //2.
+    public String generateAircraftReportForPassenger(Long passengerId) {
+        List<Aircraft> aircraftList = getRestClient().getAircraftByPassengerId(passengerId);
+        StringBuilder report = new StringBuilder();
+
+        if (aircraftList.isEmpty()) {
+            report.append("No aircraft found for passenger ").append(passengerId);
+        } else {
+            for (Aircraft aircraft : aircraftList) {
+                report.append(aircraft.getType());
+                report.append(" - ");
+                report.append(aircraft.getNumberOfPassengers());
+                if (aircraftList.indexOf(aircraft) != (aircraftList.size() - 1)) {
+                    report.append(", ");
+                }
+            }
+        }
+        return report.toString();
+    }
+
+    //3.
+
+    //4.
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
