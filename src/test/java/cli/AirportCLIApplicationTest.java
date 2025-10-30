@@ -9,5 +9,4 @@ import rest.RESTClient;
 public class AirportCLIApplicationTest {
     @Mock
     private RESTClient mockRESTClient;
-
 }

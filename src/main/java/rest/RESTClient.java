@@ -16,7 +16,7 @@ public class RESTClient {
 
     public HttpClient getClient() {
         if (client == null) {
-            client  = HttpClient.newHttpClient();
+            client = HttpClient.newHttpClient();
         }
 
         return client;
