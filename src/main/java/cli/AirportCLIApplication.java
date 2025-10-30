@@ -23,9 +23,32 @@ public class AirportCLIApplication {
         this.restClient = restClient;
     }
 
-    //1.
+    // Questions answered here
 
-    //2.
+    // Number 1
+    public String generateAirportsByCityReport() {
+        List<City> cityList = getRestClient().getAllCities();
+
+        StringBuilder report = new StringBuilder();
+
+        for (City city : cityList) {
+            List<Airport> airportList = restClient.getAirportsByCityId(city.getId());
+
+            report.append("\n\n" + city.getName() + ", " + city.getProvince() + "\n********************\n\n");
+
+            if (airportList.isEmpty()) {
+                report.append("*** No Airports ***\n");
+            } else {
+                for (Airport airport : airportList) {
+                    report.append(airport.getCode() + " - " + airport.getName() + "\n");
+                }
+            }
+        }
+
+        return report.toString();
+    }
+
+    // Number 2
     public String generateAircraftReportForPassenger(Long passengerId) {
         List<Aircraft> aircraftList = getRestClient().getAircraftByPassengerId(passengerId);
         StringBuilder report = new StringBuilder();
@@ -44,10 +67,6 @@ public class AirportCLIApplication {
         }
         return report.toString();
     }
-
-    //3.
-
-    //4.
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -81,7 +100,7 @@ public class AirportCLIApplication {
             switch (choice) {
                 case "1" -> {
                     System.out.println("\n=== ALL AIRPORTS BY CITY ===");
-                    //System.out.println(airportCLIApplication.generateAirportsByCityReport());
+                    System.out.println(airportCLIApplication.generateAirportsByCityReport());
                 }
                 case "2" -> {
                     System.out.print("Enter passenger ID: ");
@@ -89,7 +108,7 @@ public class AirportCLIApplication {
                     try {
                         Long id = Long.parseLong(input);
                         System.out.println("\n=== AIRCRAFT FOR PASSENGER " + id + " ===");
-                        //System.out.println(airportCLIApplication.generateAircraftReportForPassenger(id));
+                        System.out.println(airportCLIApplication.generateAircraftReportForPassenger(id));
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid ID. Must be a number.");
                     }
@@ -106,15 +125,8 @@ public class AirportCLIApplication {
                     }
                 }
                 case "4" -> {
-                    System.out.print("Enter passenger ID: ");
-                    String input = scanner.nextLine().trim();
-                    try {
-                        Long id = Long.parseLong(input);
-                        System.out.println("\n=== AIRPORTS USED BY PASSENGER " + id + " ===");
-                        //System.out.println(app.generateAirportsByPassengerReport(id));
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid ID. Must be a number.");
-                    }
+                        System.out.println("\n=== AIRPORTS USED BY PASSENGER ===");
+                        //System.out.println(airportCLIApplication.generateAirportsByPassengerReport());
                 }
                 case "5" -> {
                     System.out.println("Goodbye!");
