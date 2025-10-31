@@ -51,46 +51,48 @@ public class AirportCLIApplication {
     }
 
     // Number 2
-    public String generateAircraftReportForPassenger(Long passengerId) {
-        List<Aircraft> aircraftList = getRestClient().getAircraftByPassengerId(passengerId);
-        StringBuilder report = new StringBuilder();
+public String generateAircraftReportForPassenger(Long passengerId) {
+    List<Aircraft> aircraftList = getRestClient().getAircraftByPassengerId(passengerId);
+    StringBuilder report = new StringBuilder();
 
-        if (aircraftList.isEmpty()) {
-            report.append("No aircraft found for passenger ").append(passengerId);
-        } else {
-            for (Aircraft aircraft : aircraftList) {
-                report.append(aircraft.getType());
-                report.append(" - ");
-                report.append(aircraft.getNumberOfPassengers());
-                if (aircraftList.indexOf(aircraft) != (aircraftList.size() - 1)) { // <- very smart idea!
-                    report.append(", ");
-                }
-            }
+    if (aircraftList.isEmpty()) {
+        report.append("No aircraft found for passenger ").append(passengerId);
+    } else {
+        for (Aircraft aircraft : aircraftList) {
+            report.append(aircraft.getType())
+                    .append(" - ")
+                    .append(aircraft.getNumberOfPassengers())
+                    .append("\n");
         }
-        return report.toString();
+
+        if (report.length() > 0) {
+            report.setLength(report.length() - 1);
+        }
     }
+    return report.toString();
+}
 
     // Number 3
-    public String generateAirportByAircraftReport(Long aircraftId) { //TODO change function name to be consistent
-        List<Airport> airportList = getRestClient().getAirportByAircraftId(aircraftId);
-        StringBuilder report = new StringBuilder();
+public String generateAirportsByAircraftReport(Long aircraftId) {
+    List<Airport> airportList = getRestClient().getAirportByAircraftId(aircraftId);
+    StringBuilder report = new StringBuilder();
 
-        if (airportList.isEmpty()) {
-            report.append("No airports found for aircraft id ").append(aircraftId);
+    if (airportList.isEmpty()) {
+        report.append("No airports found for aircraft ID ").append(aircraftId);
+    } else {
+        for (Airport airport : airportList) {
+            report.append(airport.getName())
+                .append(" - ")
+                .append(airport.getCode())
+                .append("\n");
         }
-        else {
-            for (Airport airport : airportList) {
-                report.append(airport.getName());
-                report.append(" - ");
-                report.append(airport.getCode());
-                if (airportList.indexOf(airport) != (airportList.size() - 1)) {
-                    report.append(", ");
-                }
-            }
+        if (report.length() > 0) {
+            report.setLength(report.length() - 1);
         }
-        return report.toString();
     }
-
+    return report.toString();
+}
+    
     // 4.
     public String generateAirportsByPassengerReport() {
         Map<Passenger, Set<Airport>> data = getRestClient().getPassengersWithTheirAirports();
@@ -178,7 +180,7 @@ public class AirportCLIApplication {
                     try {
                         Long id = Long.parseLong(input);
                         System.out.println("\n=== AIRPORTS FOR AIRCRAFT " + id + " ===");
-                        System.out.println(airportCLIApplication.generateAirportByAircraftReport(id));
+                        System.out.println(airportCLIApplication.generateAirportsByAircraftReport(id));
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid ID. Must be a number.");
                     }
