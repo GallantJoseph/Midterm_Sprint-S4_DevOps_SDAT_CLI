@@ -126,6 +126,7 @@ public class AirportCLIApplication {
         }
         return report.toString();
     }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String serverURL = "http://localhost:8080/";
@@ -177,7 +178,7 @@ public class AirportCLIApplication {
                     try {
                         Long id = Long.parseLong(input);
                         System.out.println("\n=== AIRPORTS FOR AIRCRAFT " + id + " ===");
-                        //System.out.println(app.generateAirportsByAircraftReport(id));
+                        System.out.println(airportCLIApplication.generateAirportByAircraftReport(id));
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid ID. Must be a number.");
                     }
