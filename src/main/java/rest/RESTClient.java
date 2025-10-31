@@ -109,9 +109,9 @@ public class RESTClient {
     //Number 2
     public List<Aircraft> getAircraftByPassengerId(Long passengerId) {
         List<Aircraft> aircraftList = new ArrayList<Aircraft>();
-        String airportByCityURL = serverURL + "aircraft/passenger/" + passengerId;
+        String aircraftByPassengerURL = serverURL + "aircraft/passenger/" + passengerId;
       
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(airportByCityURL)).build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(aircraftByPassengerURL)).build();
 
         try {
             HttpResponse<String> response = httpSender(request);
@@ -133,8 +133,35 @@ public class RESTClient {
 
         return aircraftList;
     }
+
     //Number 3
-    // number 4
+    public List<Airport> getAirportByAircraftId(Long aircraftId) {
+        List<Airport> airportList = new ArrayList<>();
+        String airportByAircraftURL = serverURL + "/" + aircraftId + "/airports";
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(airportByAircraftURL)).build();
+
+        try {
+            HttpResponse<String> response = httpSender(request);
+
+            airportList = buildAircraftAirportListFromResponse(response.body());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return airportList;
+    }
+
+    public List<Airport> buildAircraftAirportListFromResponse(String response) throws JsonProcessingException {
+        List<Airport> airportList = new ArrayList<>();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        airportList = mapper.readValue(response, new TypeReference<List<Airport>>() {});
+
+        return airportList;
+    }
+  
+    //Number 4
     public Map<Passenger, Set<Airport>> getPassengersWithTheirAirports() {
         Map<Passenger, Set<Airport>> result = new LinkedHashMap<>();
 

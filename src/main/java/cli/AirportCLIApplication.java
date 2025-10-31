@@ -62,7 +62,28 @@ public class AirportCLIApplication {
                 report.append(aircraft.getType());
                 report.append(" - ");
                 report.append(aircraft.getNumberOfPassengers());
-                if (aircraftList.indexOf(aircraft) != (aircraftList.size() - 1)) {
+                if (aircraftList.indexOf(aircraft) != (aircraftList.size() - 1)) { // <- very smart idea!
+                    report.append(", ");
+                }
+            }
+        }
+        return report.toString();
+    }
+
+    // Number 3
+    public String generateAirportByAircraftReport(Long aircraftId) { //TODO change function name to be consistent
+        List<Airport> airportList = getRestClient().getAirportByAircraftId(aircraftId);
+        StringBuilder report = new StringBuilder();
+
+        if (airportList.isEmpty()) {
+            report.append("No airports found for aircraft id ").append(aircraftId);
+        }
+        else {
+            for (Airport airport : airportList) {
+                report.append(airport.getName());
+                report.append(" - ");
+                report.append(airport.getCode());
+                if (airportList.indexOf(airport) != (airportList.size() - 1)) {
                     report.append(", ");
                 }
             }
