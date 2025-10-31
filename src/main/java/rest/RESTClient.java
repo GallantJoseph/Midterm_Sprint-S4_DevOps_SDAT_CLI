@@ -64,6 +64,36 @@ public class RESTClient {
         return cities;
     }
 
+    public Aircraft getAircraftById(Long aircraftId) {
+        String aircraftURL = serverURL + "aircraft/" + aircraftId;
+        Aircraft aircraft = null;
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(aircraftURL)).build();
+
+        try {
+            HttpResponse<String> response = httpSender(request);
+
+            if (response.statusCode() != 404) {
+                aircraft = getAircraftFromResponse(response.body());
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return aircraft;
+    }
+
+    public Aircraft getAircraftFromResponse(String response) throws JsonProcessingException {
+        Aircraft aircraft;
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        aircraft = mapper.readValue(response, new TypeReference<Aircraft>() {
+        });
+
+        return aircraft;
+    }
+
     public List<City> buildCityListFromResponse(String response) throws JsonProcessingException {
         List<City> cities = new ArrayList<City>();
 
@@ -139,15 +169,20 @@ public class RESTClient {
         List<Airport> airportList = new ArrayList<>();
         String airportByAircraftURL = serverURL + "aircraft/" + aircraftId + "/airports";
 
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(airportByAircraftURL)).build();
+        if (getAircraftById(aircraftId) == null) {
+            System.out.println("Aircraft with ID " + aircraftId + " not found.\n");
+        } else {
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(airportByAircraftURL)).build();
 
-        try {
-            HttpResponse<String> response = httpSender(request);
+            try {
+                HttpResponse<String> response = httpSender(request);
 
-            airportList = buildAirportListFromResponse(response.body());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+                airportList = buildAirportListFromResponse(response.body());
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
         return airportList;
     }
   
