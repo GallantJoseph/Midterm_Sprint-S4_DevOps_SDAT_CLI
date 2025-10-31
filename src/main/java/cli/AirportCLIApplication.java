@@ -3,7 +3,9 @@ package cli;
 import rest.RESTClient;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import domain.*;
 
@@ -68,6 +70,41 @@ public class AirportCLIApplication {
         return report.toString();
     }
 
+    // 4.
+    public String generateAirportsByPassengerReport() {
+        Map<Passenger, Set<Airport>> data = getRestClient().getPassengersWithTheirAirports();
+        StringBuilder report = new StringBuilder();
+
+        report.append("=== AIRPORTS USED BY EACH PASSENGER ===\n\n");
+
+        if (data.isEmpty()) {
+            report.append("No passengers found.\n");
+        } else {
+            for (Map.Entry<Passenger, Set<Airport>> entry : data.entrySet()) {
+                Passenger p = entry.getKey();
+                Set<Airport> airports = entry.getValue();
+
+                report.append(p.getFirstName())
+                        .append(" ")
+                        .append(p.getLastName())
+                        .append("\n");
+
+                if (airports.isEmpty()) {
+                    report.append("  (No airports)\n");
+                } else {
+                    for (Airport a : airports) {
+                        report.append("  ")
+                                .append(a.getCode())
+                                .append(" - ")
+                                .append(a.getName())
+                                .append("\n");
+                    }
+                }
+                report.append("\n");
+            }
+        }
+        return report.toString();
+    }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String serverURL = "http://localhost:8080/";
@@ -125,8 +162,8 @@ public class AirportCLIApplication {
                     }
                 }
                 case "4" -> {
-                        System.out.println("\n=== AIRPORTS USED BY PASSENGER ===");
-                        //System.out.println(airportCLIApplication.generateAirportsByPassengerReport());
+                    System.out.println("\n=== AIRPORTS USED BY PASSENGER ===");
+                    System.out.println(airportCLIApplication.generateAirportsByPassengerReport());
                 }
                 case "5" -> {
                     System.out.println("Goodbye!");
