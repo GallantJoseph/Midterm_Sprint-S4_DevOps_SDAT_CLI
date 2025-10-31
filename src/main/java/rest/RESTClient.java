@@ -8,14 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.Airport;
 import domain.City;
 import domain.Aircraft;
+import domain.Passenger;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RESTClient {
     private String serverURL;
@@ -160,5 +160,35 @@ public class RESTClient {
 
         return airportList;
     }
+  
     //Number 4
+    public Map<Passenger, Set<Airport>> getPassengersWithTheirAirports() {
+        Map<Passenger, Set<Airport>> result = new LinkedHashMap<>();
+
+        try {
+
+            String url = serverURL + "passengers";
+            HttpResponse<String> response = httpSender(HttpRequest.newBuilder().uri(URI.create(url)).build());
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            List<Passenger> passengers = mapper.readValue(response.body(), new TypeReference<List<Passenger>>() {});
+
+
+            for (Passenger p : passengers) {
+                Set<Airport> airports = new HashSet<>();
+                List<Aircraft> aircraftList = getAircraftByPassengerId(p.getId());
+
+                for (Aircraft a : aircraftList) {
+                    if (a.getAirports() != null) {
+                        airports.addAll(a.getAirports());
+                    }
+                }
+                result.put(p, airports);
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return result;
+    }
 }
