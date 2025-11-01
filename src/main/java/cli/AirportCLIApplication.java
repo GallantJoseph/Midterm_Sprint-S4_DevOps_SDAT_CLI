@@ -36,7 +36,7 @@ public class AirportCLIApplication {
         for (City city : cityList) {
             List<Airport> airportList = restClient.getAirportsByCityId(city.getId());
 
-            report.append("\n\n" + city.getName() + ", " + city.getProvince() + "\n********************\n\n");
+            report.append("\n" + city.getName() + ", " + city.getProvince() + "\n********************\n");
 
             if (airportList.isEmpty()) {
                 report.append("*** No Airports ***\n");
@@ -51,54 +51,53 @@ public class AirportCLIApplication {
     }
 
     // Number 2
-public String generateAircraftReportForPassenger(Long passengerId) {
-    List<Aircraft> aircraftList = getRestClient().getAircraftByPassengerId(passengerId);
-    StringBuilder report = new StringBuilder();
+    public String generateAircraftReportForPassenger(Long passengerId) {
+        List<Aircraft> aircraftList = getRestClient().getAircraftByPassengerId(passengerId);
+        StringBuilder report = new StringBuilder();
 
-    if (aircraftList.isEmpty()) {
-        report.append("No aircraft found for passenger ").append(passengerId);
-    } else {
-        for (Aircraft aircraft : aircraftList) {
-            report.append(aircraft.getType())
-                    .append(" - ")
-                    .append(aircraft.getNumberOfPassengers())
-                    .append("\n");
-        }
+        if (aircraftList.isEmpty()) {
+            report.append("No aircraft found for passenger ").append(passengerId);
+        } else {
+            for (Aircraft aircraft : aircraftList) {
+                report.append(aircraft.getType())
+                        .append(" - ")
+                        .append(aircraft.getNumberOfPassengers())
+                        .append("\n");
+            }
 
-        if (report.length() > 0) {
-            report.setLength(report.length() - 1);
+            if (report.length() > 0) {
+                report.setLength(report.length() - 1);
+            }
         }
+        return report.toString();
     }
-    return report.toString();
-}
 
     // Number 3
-public String generateAirportsByAircraftReport(Long aircraftId) {
-    List<Airport> airportList = getRestClient().getAirportsByAircraftId(aircraftId);
-    StringBuilder report = new StringBuilder();
+    public String generateAirportsByAircraftReport(Long aircraftId) {
+        List<Airport> airportList = getRestClient().getAirportsByAircraftId(aircraftId);
+        StringBuilder report = new StringBuilder();
 
-    if (airportList.isEmpty()) {
-        report.append("No airports found for aircraft ID ").append(aircraftId);
-    } else {
-        for (Airport airport : airportList) {
-            report.append(airport.getName())
-                .append(" - ")
-                .append(airport.getCode())
-                .append("\n");
+        if (airportList.isEmpty()) {
+            report.append("No airports found for aircraft ID ").append(aircraftId);
+        } else {
+            for (Airport airport : airportList) {
+                report.append(airport.getName())
+                    .append(" - ")
+                    .append(airport.getCode())
+                    .append("\n");
+            }
+            if (report.length() > 0) {
+                report.setLength(report.length() - 1);
+            }
         }
-        if (report.length() > 0) {
-            report.setLength(report.length() - 1);
-        }
-    }
-    return report.toString();
+
+        return report.toString();
 }
     
-    // 4.
+    // Number 4
     public String generateAirportsByPassengerReport() {
         Map<Passenger, Set<Airport>> data = getRestClient().getPassengersWithTheirAirports();
         StringBuilder report = new StringBuilder();
-
-        report.append("=== AIRPORTS USED BY EACH PASSENGER ===\n\n");
 
         if (data.isEmpty()) {
             report.append("No passengers found.\n");
@@ -133,6 +132,14 @@ public String generateAirportsByAircraftReport(Long aircraftId) {
         Scanner scanner = new Scanner(System.in);
         String serverURL = "http://localhost:8080/";
 
+        final int AIRPORTS_BY_CITY_OPTION = 1;
+        final int AIRCRAFT_BY_PASSENGER_OPTION = 2;
+        final int AIRPORTS_BY_AIRCRAFT_OPTION = 3;
+        final int AIRPORTS_BY_PASSENGERS_OPTION = 4;
+        final int QUIT_OPTION = 5;
+
+        int choice;
+
         AirportCLIApplication airportCLIApplication = new AirportCLIApplication();
 
         if (args.length == 1)
@@ -156,46 +163,65 @@ public String generateAirportsByAircraftReport(Long aircraftId) {
             System.out.println("=".repeat(50));
             System.out.print("Choose (1-5): ");
 
-            String choice = scanner.nextLine().trim();
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    choice = scanner.nextInt();
+                    scanner.nextLine();
+                    break;
+                } else {
+                    System.out.print("Invalid input. Please enter a valid number: ");
+                    scanner.next();
+                }
+            }
 
             switch (choice) {
-                case "1" -> {
+                case AIRPORTS_BY_CITY_OPTION -> {
                     System.out.println("\n=== ALL AIRPORTS BY CITY ===");
                     System.out.println(airportCLIApplication.generateAirportsByCityReport());
+                    pressEnterToContinue(scanner);
                 }
-                case "2" -> {
-                    System.out.print("Enter passenger ID: ");
+                case AIRCRAFT_BY_PASSENGER_OPTION -> {
+                    System.out.print("\nEnter passenger ID: ");
                     String input = scanner.nextLine().trim();
                     try {
                         Long id = Long.parseLong(input);
                         System.out.println("\n=== AIRCRAFT FOR PASSENGER " + id + " ===");
                         System.out.println(airportCLIApplication.generateAircraftReportForPassenger(id));
+
+                        pressEnterToContinue(scanner);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid ID. Must be a number.");
                     }
                 }
-                case "3" -> {
-                    System.out.print("Enter aircraft ID: ");
+                case AIRPORTS_BY_AIRCRAFT_OPTION -> {
+                    System.out.print("\nEnter aircraft ID: ");
                     String input = scanner.nextLine().trim();
                     try {
                         Long id = Long.parseLong(input);
                         System.out.println("\n=== AIRPORTS FOR AIRCRAFT " + id + " ===");
                         System.out.println(airportCLIApplication.generateAirportsByAircraftReport(id));
+                        pressEnterToContinue(scanner);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid ID. Must be a number.");
                     }
                 }
-                case "4" -> {
-                    System.out.println("\n=== AIRPORTS USED BY PASSENGER ===");
+                case AIRPORTS_BY_PASSENGERS_OPTION -> {
+                    System.out.println("\n=== AIRPORTS USED BY EACH PASSENGER ===\n");
                     System.out.println(airportCLIApplication.generateAirportsByPassengerReport());
+                    pressEnterToContinue(scanner);
                 }
-                case "5" -> {
-                    System.out.println("Goodbye!");
+                case QUIT_OPTION -> {
+                    System.out.println("\nGoodbye!");
                     scanner.close();
                     return;
                 }
                 default -> System.out.println("Invalid choice. Please enter 1-5.");
             }
         }
+    }
+
+    private static void pressEnterToContinue(Scanner scanner) {
+        System.out.println("\nPress Enter to Continue.");
+        scanner.nextLine();
     }
 }

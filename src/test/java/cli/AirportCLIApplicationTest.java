@@ -176,7 +176,6 @@ public void testQ3_noAirports_showMessage() {
         String report = app.generateAirportsByPassengerReport();
 
         String expected =
-                "=== AIRPORTS USED BY EACH PASSENGER ===\n\n" +
                         "Bob Ross\n" +
                         "  YYT - St. John's\n" +
                         "  YYZ - Pearson\n" +
