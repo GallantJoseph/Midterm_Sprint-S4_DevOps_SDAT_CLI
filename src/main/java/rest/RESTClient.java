@@ -155,7 +155,7 @@ public class RESTClient {
 
     public List<Aircraft> buildAircraftListFromResponse(String response) throws JsonProcessingException {
         List<Aircraft> aircraftList = new ArrayList<Aircraft>();
-      
+
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         aircraftList = mapper.readValue(response, new TypeReference<List<Aircraft>>() {
@@ -165,7 +165,7 @@ public class RESTClient {
     }
 
     //Number 3
-    public List<Airport> getAirportByAircraftId(Long aircraftId) {
+    public List<Airport> getAirportsByAircraftId(Long aircraftId) {
         List<Airport> airportList = new ArrayList<>();
         String airportByAircraftURL = serverURL + "aircraft/" + aircraftId + "/airports";
 

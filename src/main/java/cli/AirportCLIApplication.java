@@ -74,7 +74,7 @@ public String generateAircraftReportForPassenger(Long passengerId) {
 
     // Number 3
 public String generateAirportsByAircraftReport(Long aircraftId) {
-    List<Airport> airportList = getRestClient().getAirportByAircraftId(aircraftId);
+    List<Airport> airportList = getRestClient().getAirportsByAircraftId(aircraftId);
     StringBuilder report = new StringBuilder();
 
     if (airportList.isEmpty()) {
