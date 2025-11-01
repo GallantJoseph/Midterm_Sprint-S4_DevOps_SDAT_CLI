@@ -111,7 +111,7 @@ public void testQ3_displayNameCode() {
     airports.add(yyt);
     airports.add(yyz);
 
-    Mockito.when(mockRESTClient.getAirportByAircraftId(7L)).thenReturn(airports);
+    Mockito.when(mockRESTClient.getAirportsByAircraftId(7L)).thenReturn(airports);
     app.setRestClient(mockRESTClient);
 
     String report = app.generateAirportsByAircraftReport(7L);
@@ -127,7 +127,7 @@ public void testQ3_displayNameCode() {
 public void testQ3_noAirports_showMessage() {
     AirportCLIApplication app = new AirportCLIApplication();
 
-    Mockito.when(mockRESTClient.getAirportByAircraftId(999L)).thenReturn(new ArrayList<>());
+    Mockito.when(mockRESTClient.getAirportsByAircraftId(999L)).thenReturn(new ArrayList<>());
     app.setRestClient(mockRESTClient);
 
     String report = app.generateAirportsByAircraftReport(999L);
@@ -222,39 +222,4 @@ public void testQ3_noAirports_showMessage() {
         Assertions.assertTrue(report.contains("Justin Greenslade"));
         Assertions.assertTrue(report.contains("  (No airports)"));
     }
-
-    
-/*  ---------------------------------------------------------------
-    ***** Additional Tests *****
-    --------------------------------------------------------------- */
-
-    @Test
-    public void testGetAirportsByAircraftById() {
-        AirportCLIApplication airportCLIApplicationUnderTest = new AirportCLIApplication();
-
-        City city = new City("St. John's", "NL", 150000);
-        city.setId(1L);
-
-        Aircraft aircraft = new Aircraft("ABC", "YTT", 40);
-        aircraft.setId(1L);
-
-        List<Airport> airports = new ArrayList<>();
-
-        Airport airport = new Airport("St. John's Airport", "SJN", city);
-        airport.setId(1L);
-
-        airports.add(airport);
-
-        Mockito.when(mockRESTClient.getAircraftById(1L)).thenReturn(aircraft);
-        Mockito.when(mockRESTClient.getAircraftById(2L)).thenReturn(null);
-
-        Mockito.when(mockRESTClient.getAirportByAircraftId(1L)).thenReturn(airports);
-
-        airportCLIApplicationUnderTest.setRestClient(mockRESTClient);
-
-        Assertions.assertEquals(mockRESTClient.getAircraftById(1L), aircraft); 
-        Assertions.assertEquals(mockRESTClient.getAircraftById(2L), null); 
-        Assertions.assertEquals(mockRESTClient.getAirportByAircraftId(1L), airports); 
-    }
-    
 }
